@@ -53,6 +53,16 @@ function clearFilters() {
   activeCategory.value = null
 }
 
+const categoryCounts = computed(() => {
+  const counts: Record<string, number> = {}
+  for (const page of pages) {
+    if (page.category) {
+      counts[page.category] = (counts[page.category] || 0) + 1
+    }
+  }
+  return counts
+})
+
 const router = useRouter()
 
 function goToRandom() {
@@ -143,7 +153,7 @@ function goToRandom() {
           "
           @click="toggleCategory(cat.id)"
         >
-          {{ cat.label }}
+          {{ cat.label }} ({{ categoryCounts[cat.id] || 0 }})
         </button>
       </div>
 
