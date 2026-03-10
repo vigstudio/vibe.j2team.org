@@ -21,18 +21,36 @@
       </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-6 py-12 relative z-10 flex flex-col items-center">
+    <main class="max-w-6xl mx-auto px-6 py-8 relative z-10 flex flex-col items-center">
+      <!-- Action Button (Moved Up) -->
+      <div class="mb-8 animate-fade-up animate-delay-2 flex flex-col items-center z-20">
+        <button
+          v-if="!hasDrawn"
+          class="relative border border-purple-500/50 bg-[#150a21] px-10 py-4 font-display text-lg tracking-widest text-purple-200 transition-all duration-300 hover:bg-purple-900 hover:text-white hover:border-purple-400 hover:shadow-[0_0_30px_#7e22ce] active:scale-95 cursor-pointer uppercase font-bold"
+          @click="drawCards"
+        >
+          <span class="relative z-10 flex items-center gap-2"> 👁️ TỤ KHÍ SPRINT — RÚT BÀI </span>
+        </button>
+        <button
+          v-else-if="allFlipped"
+          class="relative border border-gray-600 bg-gray-900 px-6 py-2 font-display text-sm tracking-widest text-gray-400 transition-all duration-300 hover:bg-white hover:text-black cursor-pointer uppercase animate-fade-in"
+          @click="resetDeck"
+        >
+          TẨY UẾ BÀI — RÚT LẠI TỪ ĐẦU
+        </button>
+      </div>
+
       <!-- Tiêu đề -->
-      <div class="text-center mb-10 animate-fade-up">
-        <h1 class="font-display text-5xl md:text-7xl font-bold tracking-tight">
-          <span class="text-purple-500 font-display text-base tracking-widest block mb-1"
+      <div class="text-center mb-8 animate-fade-up">
+        <h1 class="font-display text-4xl md:text-6xl font-bold tracking-tight">
+          <span class="text-purple-500 font-display text-sm tracking-widest block mb-1"
             >✧ THE ARCANA OF AGILE ✧</span
           >
           <span class="text-gray-100 drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]">Scrum_</span>
           <span class="text-purple-400 animate-pulse">Tarot</span>
         </h1>
-        <p class="mt-4 text-purple-200/80 text-lg">
-          Trải Bài Vận Mệnh Sprint. Xem tương lai bạn có OT rẽ đất không?
+        <p class="mt-2 text-purple-200/80 text-base">
+          Trải Bài Vận Mệnh Sprint. Xem tương lai bạn có OT rễ đất không?
         </p>
       </div>
 
@@ -40,7 +58,7 @@
       <div class="w-full mb-12 relative">
         <!-- Đường Line huyền bí chia bài -->
         <div
-          class="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent -translate-y-1/2"
+          class="absolute top-1/2 left-0 w-full h-px bg-linear-to-r from-transparent via-purple-500/50 to-transparent -translate-y-1/2"
         ></div>
 
         <div
@@ -98,7 +116,7 @@
                 >
                   <!-- Pattern rùng rợn lúc lật ngược -->
                   <div
-                    class="w-full h-full border border-current/20 rounded-lg p-4 flex flex-col relative overflow-hidden bg-gradient-to-b from-transparent to-black/80"
+                    class="w-full h-full border border-current/20 rounded-lg p-4 flex flex-col relative overflow-hidden bg-linear-to-b from-transparent to-black/80"
                     :class="slot.isReversed ? 'rotate-180' : ''"
                   >
                     <!-- Text Arcana -->
@@ -156,24 +174,6 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- Action Button -->
-      <div class="mt-4 mb-8 animate-fade-up animate-delay-2 flex flex-col items-center z-20">
-        <button
-          v-if="!hasDrawn"
-          class="relative border border-purple-500/50 bg-[#150a21] px-10 py-4 font-display text-lg tracking-widest text-purple-200 transition-all duration-300 hover:bg-purple-900 hover:text-white hover:border-purple-400 hover:shadow-[0_0_30px_#7e22ce] active:scale-95 cursor-pointer uppercase font-bold"
-          @click="drawCards"
-        >
-          <span class="relative z-10 flex items-center gap-2"> 👁️ TỤ KHÍ SPRINT — RÚT BÀI </span>
-        </button>
-        <button
-          v-else-if="allFlipped"
-          class="relative border border-gray-600 bg-gray-900 px-6 py-3 font-display text-sm tracking-widest text-gray-400 transition-all duration-300 hover:bg-white hover:text-black cursor-pointer uppercase animate-fade-in"
-          @click="resetDeck"
-        >
-          TẨY UẾ BÀI — RÚT LẠI TỪ TOU
-        </button>
       </div>
 
       <div class="flex gap-1.5 justify-center opacity-30">
