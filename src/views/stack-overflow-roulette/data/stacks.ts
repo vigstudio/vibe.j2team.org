@@ -50,10 +50,20 @@ export function getSeniorReview(
 ): { rating: number; review: string } {
   // Combo hủy diệt 1: Excel / Txt / Brain DB
   if (database === 'txt' || database === 'brain' || database === 'json' || backend === 'excel') {
+    let reviewText = 'Cái mớ rác rưởi này mà cũng gọi là tech stack à? '
+    if (backend === 'excel') {
+      reviewText +=
+        'Backend dùng Macros Excel? Bạn tính cho hệ thống sập khi request thứ 2 bay vào à?'
+    } else if (database === 'txt') {
+      reviewText += 'Database là file txt? Bạn định viết hệ thống gửi thiệp cưới hở?'
+    } else if (database === 'json') {
+      reviewText += 'Lưu data vào file JSON? Vài bữa file phình lên 1GB rồi đơ cả app nhé.'
+    } else {
+      reviewText += 'Database là "Trí nhớ của Dev"? Chúc bạn không bị mất trí nhớ ngày mai.'
+    }
     return {
       rating: 1,
-      review:
-        'Cái mớ rác rưởi này mà cũng gọi là tech stack à? Database là file txt? Bạn định viết hệ thống gửi thiệp cưới hở?',
+      review: reviewText,
     }
   }
 
