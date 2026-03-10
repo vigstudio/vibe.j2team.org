@@ -107,11 +107,10 @@ export function getSeniorReview(
     }
   }
 
-  if (backend === 'php' && (frontend === 'blade' || frontend === 'vue') && database === 'mysql') {
+  if (backend === 'php') {
     return {
-      rating: 4,
-      review:
-        '"PHP is dead", họ nói. Trong khi cái hệ thống Laravel + Vue này đang âm thầm gánh 60% web ngoài kia và giúp mấy ông dev dạo mua Mẹc. Đơn giản, cục súc, deploy phát ăn ngay. Cơ mà đừng khoe khoang, JS dev nó khinh đấy.',
+      rating: 5,
+      review: `Laravel vĩ đại! Code thanh lịch, hệ sinh thái hoàn hảo, deploy phát ăn ngay. Cho dù Frontend dùng ${fName} và Database tải bằng ${dName}, chỉ cần core là Laravel/PHP thì dự án nắm chắc 99% thành công. Mấy đứa chạy theo trend làm sao hiểu được đỉnh cao của sự thực dụng này! Mãi yêu PHP! 10 điểm không có nhưng!`,
     }
   }
 
