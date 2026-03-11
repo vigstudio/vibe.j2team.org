@@ -4,7 +4,7 @@
       Click vào ô vuông khi nó đổi sang màu <span class="text-accent-sky font-bold">XANH</span>.
     </p>
 
-    <div 
+    <div
       class="w-48 h-48 rounded-lg cursor-pointer transition-colors duration-100 flex items-center justify-center shadow-lg active:scale-95"
       :class="boxClass"
       @click="handleClick"
@@ -15,12 +15,16 @@
       <span v-else-if="state === 'success'" class="text-bg-deep font-bold text-xl">Pass!</span>
     </div>
 
-    <p v-if="message" class="mt-4 text-sm font-medium" :class="state === 'success' ? 'text-accent-sky' : 'text-accent-coral'">
+    <p
+      v-if="message"
+      class="mt-4 text-sm font-medium"
+      :class="state === 'success' ? 'text-accent-sky' : 'text-accent-coral'"
+    >
       {{ message }}
     </p>
 
-    <button 
-      v-if="state === 'failed'" 
+    <button
+      v-if="state === 'failed'"
       @click="startChallenge"
       class="mt-6 text-sm underline text-text-secondary hover:text-text-primary transition-colors"
     >
@@ -44,16 +48,16 @@ let trollTimeoutId: number | null = null
 const startChallenge = () => {
   state.value = 'waiting'
   message.value = ''
-  
+
   // Random time between 1.5s - 5s
   const delay = 1500 + Math.random() * 3500
-  
+
   timeoutId = window.setTimeout(() => {
     state.value = 'ready'
-    
+
     // 20% chance to be a troll speed (50ms)
     const isTroll = Math.random() < 0.2
-    
+
     if (isTroll) {
       trollTimeoutId = window.setTimeout(() => {
         if (state.value === 'ready') {
@@ -75,7 +79,7 @@ const handleClick = () => {
     state.value = 'success'
     message.value = 'Phản xạ tốt đấy!'
     if (trollTimeoutId) clearTimeout(trollTimeoutId)
-    
+
     setTimeout(() => {
       emit('pass')
     }, 1000)
@@ -84,11 +88,16 @@ const handleClick = () => {
 
 const boxClass = computed(() => {
   switch (state.value) {
-    case 'waiting': return 'bg-bg-deep border-2 border-border-default'
-    case 'ready': return 'bg-accent-sky border-2 border-accent-sky'
-    case 'failed': return 'bg-accent-coral border-2 border-accent-coral'
-    case 'success': return 'bg-emerald-500 border-2 border-emerald-500'
-    default: return 'bg-bg-deep border-2 border-border-default'
+    case 'waiting':
+      return 'bg-bg-deep border-2 border-border-default'
+    case 'ready':
+      return 'bg-accent-sky border-2 border-accent-sky'
+    case 'failed':
+      return 'bg-accent-coral border-2 border-accent-coral'
+    case 'success':
+      return 'bg-emerald-500 border-2 border-emerald-500'
+    default:
+      return 'bg-bg-deep border-2 border-border-default'
   }
 })
 

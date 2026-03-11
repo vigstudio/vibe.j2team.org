@@ -27,7 +27,7 @@ const zoom = useMapZoom(mapContainer)
 // Build a map from svgPathId to province for quick lookup
 const svgIdToProvince = computed(() => {
   const map = new Map<string, Province>()
-  provinces.forEach(p => map.set(p.svgPathId, p))
+  provinces.forEach((p) => map.set(p.svgPathId, p))
   return map
 })
 
@@ -36,7 +36,7 @@ const correctSvgIds = computed(() => {
   const ids = new Set<string>()
   props.placedProvinces.forEach((placed) => {
     if (placed.status === 'correct') {
-      const prov = provinces.find(p => p.id === placed.provinceId)
+      const prov = provinces.find((p) => p.id === placed.provinceId)
       if (prov) ids.add(prov.svgPathId)
     }
   })
@@ -45,9 +45,9 @@ const correctSvgIds = computed(() => {
 
 // Province zone color mapping for correct provinces
 const zoneColors: Record<string, { fill: string; stroke: string }> = {
-  'Bắc': { fill: '#38BDF8', stroke: '#7DD3FC' },   // sky
-  'Trung': { fill: '#34D399', stroke: '#6EE7B7' },  // emerald
-  'Nam': { fill: '#FBBF24', stroke: '#FCD34D' },     // amber
+  Bắc: { fill: '#38BDF8', stroke: '#7DD3FC' }, // sky
+  Trung: { fill: '#34D399', stroke: '#6EE7B7' }, // emerald
+  Nam: { fill: '#FBBF24', stroke: '#FCD34D' }, // amber
 }
 
 function getZoneForSvgId(svgPathId: string): string {
@@ -175,18 +175,26 @@ const hoveredProvinceName = computed(() => {
 
           <!-- Grid lines for geographic feel -->
           <g opacity="0.04" stroke="#38BDF8" stroke-width="0.3">
-            <line v-for="i in 9" :key="'h'+i" x1="-10" :y1="i * 100 - 10" x2="430" :y2="i * 100 - 10" />
-            <line v-for="i in 4" :key="'v'+i" :x1="i * 100 + 10" y1="-10" :x2="i * 100 + 10" y2="950" />
+            <line
+              v-for="i in 9"
+              :key="'h' + i"
+              x1="-10"
+              :y1="i * 100 - 10"
+              x2="430"
+              :y2="i * 100 - 10"
+            />
+            <line
+              v-for="i in 4"
+              :key="'v' + i"
+              :x1="i * 100 + 10"
+              y1="-10"
+              :x2="i * 100 + 10"
+              y2="950"
+            />
           </g>
 
           <!-- Vietnam national outline (coastline shadow) -->
-          <path
-            :d="vietnamOutline"
-            fill="none"
-            stroke="#1E3448"
-            stroke-width="3"
-            opacity="0.3"
-          />
+          <path :d="vietnamOutline" fill="none" stroke="#1E3448" stroke-width="3" opacity="0.3" />
 
           <!-- Province paths -->
           <g>
@@ -206,7 +214,13 @@ const hoveredProvinceName = computed(() => {
                 'province-correct': correctSvgIds.has(p.id),
                 'province-hovered': hoveredPath === p.id && selectedProvinceId,
               }"
-              :filter="hintedProvinceId === p.id ? 'url(#glow-hint)' : correctSvgIds.has(p.id) ? 'url(#glow-correct)' : undefined"
+              :filter="
+                hintedProvinceId === p.id
+                  ? 'url(#glow-hint)'
+                  : correctSvgIds.has(p.id)
+                    ? 'url(#glow-correct)'
+                    : undefined
+              "
               @mouseenter="onMouseEnter(p.id)"
               @mouseleave="onMouseLeave()"
               @dragover="onDragOver"
@@ -258,9 +272,7 @@ const hoveredProvinceName = computed(() => {
     <Transition name="tooltip">
       <div
         v-if="hoveredProvinceName"
-        class="absolute top-3 left-1/2 -translate-x-1/2 border border-accent-sky/30
-               bg-bg-surface/90 backdrop-blur-sm px-3 py-1.5 text-xs font-display
-               text-accent-sky pointer-events-none z-10 whitespace-nowrap"
+        class="absolute top-3 left-1/2 -translate-x-1/2 border border-accent-sky/30 bg-bg-surface/90 backdrop-blur-sm px-3 py-1.5 text-xs font-display text-accent-sky pointer-events-none z-10 whitespace-nowrap"
       >
         {{ hoveredProvinceName }}
       </div>
@@ -268,32 +280,18 @@ const hoveredProvinceName = computed(() => {
 
     <!-- Zoom controls -->
     <div class="absolute bottom-3 right-3 flex flex-col gap-1.5 z-10">
-      <button
-        class="zoom-btn"
-        title="Phóng to"
-        @click="zoom.zoomIn()"
-      >
+      <button class="zoom-btn" title="Phóng to" @click="zoom.zoomIn()">
         <Icon icon="lucide:plus" class="size-4" />
       </button>
       <div
-        class="border border-border-default bg-bg-surface/90 backdrop-blur-sm
-               px-1.5 py-0.5 text-[10px] font-display text-text-dim text-center
-               min-w-[36px] tabular-nums"
+        class="border border-border-default bg-bg-surface/90 backdrop-blur-sm px-1.5 py-0.5 text-[10px] font-display text-text-dim text-center min-w-[36px] tabular-nums"
       >
         {{ zoom.zoomPercent.value }}%
       </div>
-      <button
-        class="zoom-btn"
-        title="Thu nhỏ"
-        @click="zoom.zoomOut()"
-      >
+      <button class="zoom-btn" title="Thu nhỏ" @click="zoom.zoomOut()">
         <Icon icon="lucide:minus" class="size-4" />
       </button>
-      <button
-        class="zoom-btn mt-1"
-        title="Đặt lại zoom"
-        @click="zoom.resetZoom()"
-      >
+      <button class="zoom-btn mt-1" title="Đặt lại zoom" @click="zoom.resetZoom()">
         <Icon icon="lucide:maximize-2" class="size-3.5" />
       </button>
     </div>
@@ -318,7 +316,10 @@ const hoveredProvinceName = computed(() => {
 
 <style scoped>
 .map-province {
-  transition: fill 0.2s ease, stroke 0.2s ease, stroke-width 0.15s ease;
+  transition:
+    fill 0.2s ease,
+    stroke 0.2s ease,
+    stroke-width 0.15s ease;
   cursor: pointer;
 }
 
@@ -348,16 +349,32 @@ const hoveredProvinceName = computed(() => {
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-3px); }
-  40% { transform: translateX(3px); }
-  60% { transform: translateX(-3px); }
-  80% { transform: translateX(3px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-3px);
+  }
+  40% {
+    transform: translateX(3px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
 }
 
 @keyframes pulse-hint {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 .animate-shake {

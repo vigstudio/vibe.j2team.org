@@ -4,22 +4,35 @@
       Di chuột <span class="italic">loằng ngoằng</span> bên trong ô vuông này.
     </p>
 
-    <div 
+    <div
       class="w-full max-w-sm h-48 bg-bg-surface border-2 border-dashed relative overflow-hidden flex flex-col items-center justify-center transition-colors"
       :class="boxClass"
       @mousemove="onMouseMove"
       @mouseleave="onMouseLeave"
     >
-      <p v-if="state === 'idle' || state === 'failed'" class="text-text-dim text-sm text-center px-4 font-mono pointer-events-none">
+      <p
+        v-if="state === 'idle' || state === 'failed'"
+        class="text-text-dim text-sm text-center px-4 font-mono pointer-events-none"
+      >
         Hover và di chuyển loạn xạ lên để chứng minh không phải là rùa.
       </p>
-      <p v-else-if="state === 'tracking'" class="text-accent-sky font-bold text-lg z-10 pointer-events-none">Đang theo dõi...</p>
-      <p v-else-if="state === 'success'" class="text-emerald-500 font-bold text-xl z-10 pointer-events-none uppercase tracking-widest">Đạt yêu cầu!</p>
-      
+      <p
+        v-else-if="state === 'tracking'"
+        class="text-accent-sky font-bold text-lg z-10 pointer-events-none"
+      >
+        Đang theo dõi...
+      </p>
+      <p
+        v-else-if="state === 'success'"
+        class="text-emerald-500 font-bold text-xl z-10 pointer-events-none uppercase tracking-widest"
+      >
+        Đạt yêu cầu!
+      </p>
+
       <!-- Show tiny path dots just for fun visualization -->
-      <div 
-        v-for="(pt, idx) in path" 
-        :key="idx" 
+      <div
+        v-for="(pt, idx) in path"
+        :key="idx"
         class="absolute w-1 h-1 bg-accent-sky/30 rounded-full pointer-events-none"
         :style="{ left: pt.x + 'px', top: pt.y + 'px' }"
       />
@@ -39,7 +52,10 @@ const emit = defineEmits(['pass'])
 type State = 'idle' | 'tracking' | 'failed' | 'success'
 const state = ref<State>('idle')
 
-interface Point { x: number, y: number }
+interface Point {
+  x: number
+  y: number
+}
 const path = ref<Point[]>([])
 
 let trackingTimeout: number | null = null
@@ -56,29 +72,32 @@ const checkHumanity = () => {
     state.value = 'failed'
     return
   }
-  
+
   // Calculate direction changes
   let directionChanges = 0
   for (let i = 2; i < path.value.length; i++) {
-    const p1 = path.value[i-2]
-    const p2 = path.value[i-1]
+    const p1 = path.value[i - 2]
+    const p2 = path.value[i - 1]
     const p3 = path.value[i]
     if (!p1 || !p2 || !p3) continue
-    
+
     // Cross product to find direction change (>0 left, <0 right)
     const crossProduct = (p2.x - p1.x) * (p3.y - p2.y) - (p2.y - p1.y) * (p3.x - p2.x)
-    if (Math.abs(crossProduct) > 50) { // arbitrary threshold for "wiggle"
+    if (Math.abs(crossProduct) > 50) {
+      // arbitrary threshold for "wiggle"
       directionChanges++
     }
   }
 
   // Calculate variance (spreadness of points)
-  const xs = path.value.map(p => p.x)
-  const ys = path.value.map(p => p.y)
-  const minX = Math.min(...xs), maxX = Math.max(...xs)
-  const minY = Math.min(...ys), maxY = Math.max(...ys)
-  
-  const spreadScore = (maxX - minX) + (maxY - minY)
+  const xs = path.value.map((p) => p.x)
+  const ys = path.value.map((p) => p.y)
+  const minX = Math.min(...xs),
+    maxX = Math.max(...xs)
+  const minY = Math.min(...ys),
+    maxY = Math.max(...ys)
+
+  const spreadScore = maxX - minX + (maxY - minY)
 
   if (directionChanges > 5 && spreadScore > 100) {
     state.value = 'success'
@@ -92,29 +111,29 @@ const checkHumanity = () => {
 
 const onMouseMove = (e: MouseEvent) => {
   if (state.value === 'success') return
-  
+
   if (state.value !== 'tracking') {
     state.value = 'tracking'
     path.value = []
-    
+
     // Check results after 2.5 seconds of hovering
     if (trackingTimeout) clearTimeout(trackingTimeout)
     trackingTimeout = window.setTimeout(() => {
       checkHumanity()
     }, 2500)
   }
-  
+
   // Throttle points visually a bit, but capture for logic
   // Just use offset within the box
   const target = e.target as HTMLElement
   const rect = target.getBoundingClientRect()
-  
+
   // To avoid storing too many points:
   if (path.value.length === 0 || Math.random() > 0.3) {
-      path.value.push({ 
-        x: e.clientX - rect.left, 
-        y: e.clientY - rect.top 
-      })
+    path.value.push({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    })
   }
 }
 

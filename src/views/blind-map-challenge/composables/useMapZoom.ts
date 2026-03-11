@@ -112,7 +112,11 @@ export function useMapZoom(containerRef: Ref<HTMLElement | null>) {
     const dx = e.clientX - startX
     const dy = e.clientY - startY
 
-    if (!wasDragging.value && Math.abs(dx) < PAN_DRAG_THRESHOLD && Math.abs(dy) < PAN_DRAG_THRESHOLD) {
+    if (
+      !wasDragging.value &&
+      Math.abs(dx) < PAN_DRAG_THRESHOLD &&
+      Math.abs(dy) < PAN_DRAG_THRESHOLD
+    ) {
       return // haven't exceeded threshold yet
     }
 

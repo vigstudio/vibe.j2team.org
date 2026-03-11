@@ -42,11 +42,7 @@ function handleBackToStart() {
 
 <template>
   <Transition name="screen" mode="out-in">
-    <StartScreen
-      v-if="currentScreen === 'start'"
-      key="start"
-      @start="handleStart"
-    />
+    <StartScreen v-if="currentScreen === 'start'" key="start" @start="handleStart" />
     <GameScreen
       v-else-if="currentScreen === 'game'"
       :key="'game-' + gameKey"

@@ -5,7 +5,7 @@
     </p>
 
     <div class="w-full max-w-sm">
-      <textarea 
+      <textarea
         v-model="input"
         rows="3"
         class="w-full bg-bg-deep border border-border-default rounded-none px-4 py-3 text-text-primary placeholder:text-text-dim focus:outline-none focus:ring-0 focus:border-accent-sky transition-all resize-none font-sans"
@@ -13,15 +13,19 @@
         :disabled="state === 'success'"
         @input="checkInput"
       ></textarea>
-      
-      <p v-if="message" class="mt-2 text-sm font-medium" :class="state === 'success' ? 'text-accent-sky' : 'text-accent-coral'">
+
+      <p
+        v-if="message"
+        class="mt-2 text-sm font-medium"
+        :class="state === 'success' ? 'text-accent-sky' : 'text-accent-coral'"
+      >
         {{ message }}
       </p>
 
       <div class="mt-4 flex justify-between text-xs text-text-secondary">
-        <span :class="{'text-accent-sky': lengthOk}">Dài > 10 ký tự</span>
-        <span :class="{'text-accent-sky': spaceOk}">Có khoảng trắng</span>
-        <span :class="{'text-accent-sky': notNumericOk}">Không chỉ là số</span>
+        <span :class="{ 'text-accent-sky': lengthOk }">Dài > 10 ký tự</span>
+        <span :class="{ 'text-accent-sky': spaceOk }">Có khoảng trắng</span>
+        <span :class="{ 'text-accent-sky': notNumericOk }">Không chỉ là số</span>
       </div>
     </div>
   </div>
