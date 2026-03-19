@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeUnmount, type Directive } from 'vue'
-import { useEventListener, refDebounced } from '@vueuse/core'
+import { refDebounced } from '@vueuse/core'
 import { RouterLink, useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { pages, featuredPages } from '@/data/pages-loader'
@@ -8,6 +8,8 @@ import type { PageInfo } from '@/types/page'
 import { padIndex } from '@/data/homepage'
 import { toAuthorSlug } from '@/data/authors'
 import { categories, type CategoryId } from '@/data/categories'
+import { normalize } from '@/utils/text'
+import { useSearchShortcut } from '@/composables/useSearchShortcut'
 import FavoriteButton from '@/components/FavoriteButton.vue'
 import { useFavoritesStore } from '@/stores/useFavoritesStore'
 
@@ -39,18 +41,6 @@ const vAnimate: Directive<HTMLElement, string | undefined> = {
   unmounted(el) {
     sharedObserver.unobserve(el)
   },
-}
-
-function removeAccents(str: string): string {
-  return str
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/đ/g, 'd')
-    .replace(/Đ/g, 'D')
-}
-
-function normalize(str: string): string {
-  return removeAccents(str).toLowerCase()
 }
 
 const searchQuery = ref('')
@@ -143,17 +133,7 @@ const categoryContainerRef = ref<HTMLElement | null>(null)
 
 const searchInputRef = ref<HTMLInputElement | null>(null)
 
-function handleKeydown(e: KeyboardEvent) {
-  if (e.key === '/') {
-    const tag = (e.target as HTMLElement)?.tagName
-    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
-    if ((e.target as HTMLElement)?.isContentEditable) return
-    e.preventDefault()
-    searchInputRef.value?.focus()
-  }
-}
-
-useEventListener(document, 'keydown', handleKeydown)
+useSearchShortcut(searchInputRef)
 </script>
 
 <template>

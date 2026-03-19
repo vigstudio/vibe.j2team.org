@@ -2,8 +2,12 @@
 import { computed, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { storeToRefs } from 'pinia'
+import { refDebounced } from '@vueuse/core'
 import { Icon } from '@iconify/vue'
 import { pageByPath } from '@/data/pages-loader'
+import { categories, type CategoryId } from '@/data/categories'
+import { normalize } from '@/utils/text'
+import { useSearchShortcut } from '@/composables/useSearchShortcut'
 import { useFavoritesStore } from '@/stores/useFavoritesStore'
 import { useRecentlyViewedStore } from '@/stores/useRecentlyViewedStore'
 import { useDraggable } from '@/composables/useDraggable'
@@ -30,6 +34,56 @@ const bookmarkedPages = computed(() => {
     return p ? [p] : []
   })
 })
+
+// --- Search & Category Filter ---
+
+const searchQuery = ref('')
+const debouncedQuery = refDebounced(searchQuery, 300)
+const activeCategory = ref<CategoryId | null>(null)
+const categoryExpanded = ref(false)
+const searchInputRef = ref<HTMLInputElement | null>(null)
+
+const isFiltering = computed(() => {
+  return searchQuery.value.trim() !== '' || activeCategory.value !== null
+})
+
+const bookmarkCategoryCounts = computed(() => {
+  const counts: Partial<Record<CategoryId, number>> = {}
+  for (const page of bookmarkedPages.value) {
+    if (page.category) {
+      counts[page.category] = (counts[page.category] || 0) + 1
+    }
+  }
+  return counts
+})
+
+const filteredBookmarks = computed(() => {
+  const query = normalize(debouncedQuery.value.trim())
+  const category = activeCategory.value
+
+  return bookmarkedPages.value.filter((page) => {
+    if (category && page.category !== category) return false
+    if (query) {
+      return (
+        normalize(page.name).includes(query) ||
+        normalize(page.description).includes(query) ||
+        normalize(page.author).includes(query)
+      )
+    }
+    return true
+  })
+})
+
+function toggleCategory(id: CategoryId) {
+  activeCategory.value = activeCategory.value === id ? null : id
+}
+
+function clearFilters() {
+  searchQuery.value = ''
+  activeCategory.value = null
+}
+
+useSearchShortcut(searchInputRef)
 </script>
 
 <template>
@@ -54,8 +108,100 @@ const bookmarkedPages = computed(() => {
 
       <!-- Bookmarked apps grid -->
       <div v-if="bookmarkedPages.length > 0">
+        <!-- Search & Filter (hidden during reorder) -->
+        <div v-if="!isReordering" class="mt-12 space-y-4">
+          <!-- Search input -->
+          <div class="relative">
+            <Icon
+              icon="lucide:search"
+              aria-hidden="true"
+              class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-dim pointer-events-none"
+            />
+            <input
+              ref="searchInputRef"
+              v-model="searchQuery"
+              type="search"
+              placeholder="Tìm theo tên, mô tả hoặc tác giả..."
+              class="w-full bg-bg-surface border border-border-default pl-11 pr-12 py-3 text-sm text-text-primary placeholder-text-dim font-body transition-colors duration-200 focus:outline-none focus:border-accent-coral"
+            />
+            <kbd
+              class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-mono text-text-dim border border-border-default rounded bg-bg-elevated"
+            >
+              /
+            </kbd>
+          </div>
+
+          <!-- Category tags -->
+          <div class="relative">
+            <div
+              class="flex flex-wrap gap-2 transition-[max-height] duration-300 ease-in-out overflow-hidden sm:!max-h-none"
+              :class="categoryExpanded ? 'max-h-[500px]' : 'max-h-[4.5rem]'"
+            >
+              <button
+                class="px-3 py-1.5 text-xs font-display tracking-wide border transition-colors duration-200"
+                :class="
+                  activeCategory === null
+                    ? 'bg-accent-coral text-bg-deep border-accent-coral'
+                    : 'bg-bg-elevated text-text-secondary border-border-default hover:border-accent-coral hover:text-text-primary'
+                "
+                @click="activeCategory = null"
+              >
+                Tất cả ({{ bookmarkedPages.length }})
+              </button>
+              <button
+                v-for="cat in categories"
+                :key="cat.id"
+                :title="cat.description"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-display tracking-wide border transition-colors duration-200"
+                :class="
+                  activeCategory === cat.id
+                    ? 'bg-accent-coral text-bg-deep border-accent-coral'
+                    : bookmarkCategoryCounts[cat.id]
+                      ? 'bg-bg-elevated text-text-secondary border-border-default hover:border-accent-coral hover:text-text-primary'
+                      : 'bg-bg-surface text-text-dim border-border-default border-dashed hover:border-accent-coral/50 hover:text-text-secondary'
+                "
+                @click="toggleCategory(cat.id)"
+              >
+                <Icon :icon="cat.icon" aria-hidden="true" class="w-3.5 h-3.5" />
+                {{ cat.label }}
+                <span v-if="bookmarkCategoryCounts[cat.id]"
+                  >({{ bookmarkCategoryCounts[cat.id] }})</span
+                >
+                <span v-else class="text-accent-coral/70">✦</span>
+              </button>
+            </div>
+            <!-- Expand/collapse toggle (mobile only) -->
+            <button
+              class="sm:hidden mt-1.5 flex items-center gap-1 text-xs text-text-dim hover:text-accent-coral transition-colors duration-200"
+              @click="categoryExpanded = !categoryExpanded"
+            >
+              <Icon
+                :icon="categoryExpanded ? 'lucide:chevron-up' : 'lucide:chevron-down'"
+                aria-hidden="true"
+                class="w-3.5 h-3.5"
+              />
+              {{ categoryExpanded ? 'Thu gọn' : 'Xem thêm danh mục' }}
+            </button>
+          </div>
+
+          <!-- Result count when filtering -->
+          <div v-if="isFiltering" class="flex items-center gap-3 text-sm text-text-secondary">
+            <span>
+              {{ filteredBookmarks.length }} kết quả
+              <span v-if="filteredBookmarks.length === 0">— </span>
+            </span>
+            <button
+              v-if="filteredBookmarks.length === 0"
+              class="text-accent-coral hover:underline text-sm"
+              @click="clearFilters"
+            >
+              Xóa bộ lọc
+            </button>
+          </div>
+        </div>
+
         <!-- Toolbar -->
-        <div class="mt-12 mb-5 flex items-center justify-between gap-4 min-h-[1.75rem]">
+        <div class="mt-5 mb-5 flex items-center justify-between gap-4 min-h-[1.75rem]">
           <p
             v-if="isReordering"
             class="text-xs text-text-dim font-display tracking-wide animate-fade-up"
@@ -65,8 +211,9 @@ const bookmarkedPages = computed(() => {
           </p>
           <span v-else />
 
-          <!-- Toggle -->
+          <!-- Toggle (hidden when filtering) -->
           <button
+            v-if="!isFiltering"
             @click="toggleReorder"
             role="switch"
             :aria-checked="isReordering"
@@ -94,7 +241,7 @@ const bookmarkedPages = computed(() => {
 
         <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <div
-            v-for="(page, index) in bookmarkedPages"
+            v-for="(page, index) in isReordering ? bookmarkedPages : filteredBookmarks"
             :key="page.path"
             :draggable="isReordering"
             @dragstart="isReordering && onDragStart($event, index)"
