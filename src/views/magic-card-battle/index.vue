@@ -14,6 +14,44 @@
       />
     </div>
 
+    <!-- VFX LAYER -->
+    <div class="fixed inset-0 pointer-events-none z-50">
+      <div
+        v-for="p in vfxParticles"
+        :key="p.id"
+        class="absolute rounded-full"
+        :style="{
+          left: `${p.x}%`,
+          top: `${p.y}%`,
+          width: `${p.size}px`,
+          height: `${p.size}px`,
+          backgroundColor: p.color,
+          opacity: p.opacity,
+          transform: `translate(-50%, -50%) scale(${p.scale})`,
+          transition: 'all 0.05s linear',
+          boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+        }"
+      />
+      <!-- VFX Text popups -->
+      <div
+        v-for="popup in vfxPopups"
+        :key="popup.id"
+        class="absolute font-display font-bold text-center pointer-events-none"
+        :style="{
+          left: `${popup.x}%`,
+          top: `${popup.y}%`,
+          fontSize: `${popup.size}px`,
+          color: popup.color,
+          transform: 'translate(-50%, -50%)',
+          textShadow: `0 0 15px ${popup.color}, 0 0 30px ${popup.color}`,
+          opacity: popup.opacity,
+          transition: 'all 0.05s linear',
+        }"
+      >
+        {{ popup.text }}
+      </div>
+    </div>
+
     <!-- LOBBY SCREEN -->
     <div
       v-if="gameState.phase === 'lobby'"
@@ -24,7 +62,7 @@
           <span class="text-purple-400">DEV</span>
           <span class="text-gray-100">_ARENA</span>
         </h1>
-        <p class="text-purple-300/60 text-sm tracking-widest uppercase mb-8">
+        <p class="text-purple-300/60 text-sm tracking-widest uppercase mb-6">
           ⚔️ Đấu Bài Ma Thuật Developer — 200+ Quân Bài
         </p>
       </div>
@@ -50,9 +88,157 @@
         </button>
       </div>
 
-      <p class="text-gray-600 text-xs mt-8 max-w-sm text-center">
+      <button
+        class="mt-6 px-4 py-2 bg-purple-900/30 border border-purple-500/30 text-purple-300 text-xs font-display uppercase tracking-wider hover:bg-purple-800/40 transition-all cursor-pointer"
+        @click="showTutorial = true"
+      >
+        📖 Hướng dẫn chơi
+      </button>
+
+      <p class="text-gray-600 text-xs mt-4 max-w-sm text-center">
         200 quân bài • 6 loại bài • 8 môi trường • 9 kỹ năng đặc biệt
       </p>
+    </div>
+
+    <!-- TUTORIAL MODAL -->
+    <div
+      v-if="showTutorial"
+      class="fixed inset-0 bg-black/80 z-60 flex items-center justify-center p-4"
+      @click.self="showTutorial = false"
+    >
+      <div
+        class="bg-[#0d1225] border border-purple-500/30 max-w-lg w-full max-h-[85vh] overflow-y-auto p-6 relative"
+      >
+        <button
+          class="absolute top-3 right-3 text-gray-500 hover:text-white text-lg cursor-pointer"
+          @click="showTutorial = false"
+        >
+          ✕
+        </button>
+
+        <h2 class="font-display text-2xl text-purple-400 font-bold mb-4">📖 Hướng Dẫn Chơi</h2>
+
+        <!-- Tutorial Steps -->
+        <div class="space-y-4 text-sm text-gray-300">
+          <!-- Step 1 -->
+          <div class="border-l-2 border-purple-500 pl-3">
+            <h3 class="font-display text-purple-300 font-bold mb-1">
+              Bước 1: Chọn độ khó & bắt đầu
+            </h3>
+            <p>
+              Chọn 1 trong 3 mức độ khó. Bạn và AI mỗi bên khởi đầu
+              <span class="text-red-400 font-bold">30 HP</span>,
+              <span class="text-blue-400 font-bold">1 Mana</span>, và
+              <span class="text-yellow-400 font-bold">4 lá bài</span> trên tay.
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="border-l-2 border-blue-500 pl-3">
+            <h3 class="font-display text-blue-300 font-bold mb-1">Bước 2: Hiểu Mana 💎</h3>
+            <p>
+              Mỗi lượt bạn được +1 Mana tối đa (max 10). Mỗi lá bài tốn Mana để chơi —
+              <span class="bg-blue-900 text-blue-200 px-1 rounded text-xs">số xanh</span> ở góc trên
+              trái bài.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="border-l-2 border-green-500 pl-3">
+            <h3 class="font-display text-green-300 font-bold mb-1">Bước 3: Chơi bài ra sân ⚔️</h3>
+            <div class="space-y-1.5">
+              <p>
+                <strong>Quân Lính</strong>: Click bài trên tay → Click ô trống
+                <span class="text-green-500">+</span> trên sân → Quân lính xuất hiện!
+              </p>
+              <p>
+                <strong>Phép/Bổ trợ</strong>: Click bài → Click quân lính để buff/gây sát thương.
+                Phép không cần target sẽ tự kích hoạt.
+              </p>
+              <p>
+                <strong>Bẫy</strong>: Click bài → Tự động úp mặt, kích hoạt khi đối thủ hành động.
+              </p>
+              <p>
+                <strong>Vũ khí</strong>: Click bài → Click quân lính bạn → Trang bị vũ khí cho quân
+                đó.
+              </p>
+              <p><strong>Môi trường</strong>: Click bài → Tự kích hoạt, ảnh hưởng cả 2 bên.</p>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="border-l-2 border-yellow-500 pl-3">
+            <h3 class="font-display text-yellow-300 font-bold mb-1">Bước 4: Tấn công 💥</h3>
+            <p>
+              Click quân lính bạn (có chấm vàng
+              <span class="inline-block w-2 h-2 rounded-full bg-yellow-500 animate-pulse" />) →
+              Click quân đối thủ hoặc Hero 🤖 đối thủ.
+            </p>
+            <p class="text-gray-500 text-xs mt-1">
+              ⚡ Rush: Tấn công ngay lượt triệu hồi. 🏰 Taunt: Phải tấn công quân Taunt trước. 👻
+              Stealth: Không thể bị target.
+            </p>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="border-l-2 border-red-500 pl-3">
+            <h3 class="font-display text-red-300 font-bold mb-1">Bước 5: Kết thúc lượt</h3>
+            <p>
+              Nhấn
+              <span
+                class="bg-yellow-900/50 border border-yellow-500/50 text-yellow-300 px-2 py-0.5 rounded text-xs"
+                >KẾT THÚC LƯỢT</span
+              >
+              → AI sẽ chơi → Lại đến lượt bạn!
+            </p>
+          </div>
+
+          <!-- Step 6 -->
+          <div class="border-l-2 border-orange-500 pl-3">
+            <h3 class="font-display text-orange-300 font-bold mb-1">Bước 6: 6 loại bài</h3>
+            <div class="grid grid-cols-2 gap-1 text-xs">
+              <span>⚔️ <strong>Quân Lính</strong> — Chiến đấu</span>
+              <span>✨ <strong>Phép</strong> — Hiệu ứng tức thì</span>
+              <span>🪤 <strong>Bẫy</strong> — Úp mặt, tự kích</span>
+              <span>💊 <strong>Bổ trợ</strong> — Buff quân lính</span>
+              <span>🗡️ <strong>Vũ khí</strong> — Trang bị</span>
+              <span>🌍 <strong>Môi trường</strong> — Thay đổi luật</span>
+            </div>
+          </div>
+
+          <!-- Step 7 -->
+          <div class="border-l-2 border-pink-500 pl-3">
+            <h3 class="font-display text-pink-300 font-bold mb-1">Bước 7: 9 kỹ năng đặc biệt</h3>
+            <div class="grid grid-cols-1 gap-0.5 text-xs">
+              <span>⚡ <strong>Rush</strong> — Tấn công ngay khi ra sân</span>
+              <span>🛡️ <strong>Shield</strong> — Chặn 1 đòn sát thương</span>
+              <span>👻 <strong>Stealth</strong> — Không thể bị target</span>
+              <span>🏰 <strong>Taunt</strong> — Bắt buộc tấn công quân này</span>
+              <span>🧛 <strong>Lifesteal</strong> — Hút máu khi gây sát thương</span>
+              <span>☠️ <strong>Poison</strong> — Gây độc mỗi lượt</span>
+              <span>💀 <strong>Deathrattle</strong> — Kích hoạt khi chết</span>
+              <span>📯 <strong>Battlecry</strong> — Kích hoạt khi triệu hồi</span>
+              <span>💥 <strong>Overflow</strong> — Sát thương dư lan sang Hero</span>
+            </div>
+          </div>
+
+          <!-- Win Condition -->
+          <div class="border-l-2 border-yellow-400 pl-3 bg-yellow-900/10 py-2">
+            <h3 class="font-display text-yellow-400 font-bold mb-1">🏆 Điều kiện thắng</h3>
+            <p>
+              Hạ HP Hero đối thủ xuống <span class="text-red-400 font-bold">0</span>. Đơn giản vậy
+              thôi!
+            </p>
+          </div>
+        </div>
+
+        <button
+          class="mt-6 w-full py-2 bg-purple-600 hover:bg-purple-500 text-white font-display uppercase tracking-wider text-sm transition-all cursor-pointer"
+          @click="showTutorial = false"
+        >
+          Đã hiểu, vào đấu! ⚔️
+        </button>
+      </div>
     </div>
 
     <!-- LOADING -->
@@ -72,7 +258,11 @@
         class="flex items-center justify-between px-4 py-2 bg-black/40 border-b border-red-900/30"
       >
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-full bg-red-900 flex items-center justify-center text-sm">
+          <div
+            class="w-8 h-8 rounded-full bg-red-900 flex items-center justify-center text-sm"
+            :class="attackingIndex !== null ? 'cursor-pointer hover:ring-2 ring-red-400' : ''"
+            @click="handleEnemyHeroAttack"
+          >
             🤖
           </div>
           <div>
@@ -231,11 +421,7 @@
         class="flex items-center justify-between px-4 py-2 bg-black/40 border-t border-blue-900/30"
       >
         <div class="flex items-center gap-3">
-          <div
-            class="w-8 h-8 rounded-full bg-blue-900 flex items-center justify-center text-sm"
-            :class="attackingIndex !== null ? 'cursor-pointer hover:ring-2 ring-yellow-400' : ''"
-            @click="handleHeroAttack"
-          >
+          <div class="w-8 h-8 rounded-full bg-blue-900 flex items-center justify-center text-sm">
             👤
           </div>
           <div>
@@ -267,6 +453,13 @@
             />
           </div>
           <span class="text-xs text-gray-500">🃏 {{ gameState.player.deck.length }}</span>
+          <button
+            class="px-2 py-1 bg-gray-800 border border-gray-600 text-gray-400 text-xs hover:text-white transition-all cursor-pointer"
+            @click="showTutorial = true"
+            title="Hướng dẫn chơi"
+          >
+            ❓
+          </button>
           <button
             v-if="isPlayerTurn && !isGameOver"
             class="px-3 py-1 bg-yellow-900/50 border border-yellow-500/50 text-yellow-300 text-xs font-display uppercase tracking-wider hover:bg-yellow-800 transition-all cursor-pointer"
@@ -397,7 +590,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onUnmounted } from 'vue'
 import { Icon } from '@iconify/vue'
 import type { CardType, Rarity, Keyword, CardData } from './types'
 import { useGameEngine } from './composables/useGameEngine'
@@ -417,7 +610,229 @@ const {
 } = useGameEngine()
 
 const showLog = ref(false)
+const showTutorial = ref(false)
 
+// ===== VFX SYSTEM =====
+interface VfxParticle {
+  id: number
+  x: number
+  y: number
+  vx: number
+  vy: number
+  size: number
+  color: string
+  opacity: number
+  scale: number
+  life: number
+}
+
+interface VfxPopup {
+  id: number
+  x: number
+  y: number
+  vy: number
+  text: string
+  color: string
+  size: number
+  opacity: number
+  life: number
+}
+
+const vfxParticles = ref<VfxParticle[]>([])
+const vfxPopups = ref<VfxPopup[]>([])
+let vfxIdCounter = 0
+let vfxAnimFrame = 0
+
+function spawnVfx(
+  x: number,
+  y: number,
+  count: number,
+  color: string,
+  opts: { spread?: number; sizeMin?: number; sizeMax?: number; speed?: number; life?: number } = {},
+) {
+  const { spread = 8, sizeMin = 3, sizeMax = 10, speed = 0.4, life = 40 } = opts
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2
+    const spd = (Math.random() * 0.5 + 0.5) * speed
+    vfxParticles.value.push({
+      id: vfxIdCounter++,
+      x,
+      y,
+      vx: Math.cos(angle) * spd * spread,
+      vy: Math.sin(angle) * spd * spread,
+      size: sizeMin + Math.random() * (sizeMax - sizeMin),
+      color,
+      opacity: 1,
+      scale: 1,
+      life,
+    })
+  }
+}
+
+function spawnPopup(x: number, y: number, text: string, color: string, size = 24) {
+  vfxPopups.value.push({
+    id: vfxIdCounter++,
+    x,
+    y,
+    vy: -0.3,
+    text,
+    color,
+    size,
+    opacity: 1,
+    life: 50,
+  })
+}
+
+function tickVfx() {
+  // Update particles
+  vfxParticles.value = vfxParticles.value
+    .map((p) => ({
+      ...p,
+      x: p.x + p.vx,
+      y: p.y + p.vy,
+      opacity: p.opacity - 1 / p.life,
+      scale: p.scale * 0.97,
+      life: p.life - 1,
+    }))
+    .filter((p) => p.life > 0 && p.opacity > 0)
+
+  // Update popups
+  vfxPopups.value = vfxPopups.value
+    .map((p) => ({
+      ...p,
+      y: p.y + p.vy,
+      opacity: p.opacity - 1 / p.life,
+      life: p.life - 1,
+    }))
+    .filter((p) => p.life > 0 && p.opacity > 0)
+
+  vfxAnimFrame = requestAnimationFrame(tickVfx)
+}
+
+vfxAnimFrame = requestAnimationFrame(tickVfx)
+onUnmounted(() => cancelAnimationFrame(vfxAnimFrame))
+
+// Watch for game log changes to trigger VFX
+watch(
+  () => gameState.value.log.length,
+  (newLen, oldLen) => {
+    if (newLen <= oldLen) return
+    const latest = gameState.value.log[newLen - 1]
+    if (!latest) return
+
+    const msg = latest.message
+    const isPlayer = latest.side === 'player'
+
+    // Spell cast → magic sparkle
+    if (msg.includes('✨') || msg.includes('phép')) {
+      spawnVfx(50, 50, 25, '#a855f7', { spread: 15, sizeMax: 12, life: 50 })
+      spawnVfx(50, 50, 15, '#c084fc', { spread: 10, sizeMax: 8, life: 35 })
+      spawnPopup(50, 45, '✨', '#c084fc', 36)
+    }
+
+    // Damage → red explosion
+    if (msg.includes('sát thương') && latest.type === 'attack') {
+      const cx = isPlayer ? 50 : 50
+      const cy = isPlayer ? 25 : 65
+      spawnVfx(cx, cy, 30, '#ef4444', { spread: 12, sizeMax: 14, life: 40 })
+      spawnVfx(cx, cy, 15, '#f97316', { spread: 8, sizeMax: 10, life: 30 })
+      spawnPopup(cx, cy - 5, '💥', '#ef4444', 40)
+    }
+
+    // Summon/play → blue-green sparkle
+    if (msg.includes('Triệu hồi') || msg.includes('triệu hồi')) {
+      const cy = isPlayer ? 65 : 25
+      spawnVfx(50, cy, 20, '#22d3ee', { spread: 10, sizeMax: 8, life: 35 })
+      spawnVfx(50, cy, 10, '#34d399', { spread: 6, sizeMax: 6, life: 25 })
+    }
+
+    // Buff → gold sparkle
+    if (msg.includes('+') && msg.includes('ATK')) {
+      const cy = isPlayer ? 65 : 25
+      spawnVfx(50, cy, 20, '#eab308', { spread: 8, sizeMax: 10, life: 40 })
+      spawnPopup(50, cy - 5, '⬆️', '#eab308', 28)
+    }
+
+    // Heal → green particles
+    if (msg.includes('Hồi') || msg.includes('hồi')) {
+      const cy = isPlayer ? 78 : 8
+      spawnVfx(30, cy, 18, '#22c55e', { spread: 6, sizeMax: 8, life: 35 })
+      spawnPopup(30, cy - 3, '💚', '#22c55e', 28)
+    }
+
+    // Creature dies → dark explosion
+    if (msg.includes('tiêu diệt') || msg.includes('Tiêu diệt')) {
+      spawnVfx(50, 45, 25, '#991b1b', { spread: 12, sizeMax: 12, life: 35 })
+      spawnVfx(50, 45, 12, '#7c2d12', { spread: 8, sizeMax: 8, life: 25 })
+      spawnPopup(50, 40, '💀', '#dc2626', 32)
+    }
+
+    // Freeze → ice blue
+    if (msg.includes('Đóng băng') || msg.includes('đóng băng')) {
+      spawnVfx(50, 45, 20, '#93c5fd', { spread: 10, sizeMax: 8, life: 40 })
+      spawnPopup(50, 40, '🧊', '#93c5fd', 32)
+    }
+
+    // Shield → golden flash
+    if (msg.includes('Shield')) {
+      spawnVfx(50, 55, 15, '#fbbf24', { spread: 6, sizeMax: 8, life: 30 })
+      spawnPopup(50, 50, '🛡️', '#fbbf24', 28)
+    }
+
+    // Environment → wide green wave
+    if (msg.includes('🌍')) {
+      spawnVfx(25, 50, 15, '#10b981', { spread: 20, sizeMax: 6, life: 50 })
+      spawnVfx(50, 50, 15, '#059669', { spread: 20, sizeMax: 6, life: 50 })
+      spawnVfx(75, 50, 15, '#10b981', { spread: 20, sizeMax: 6, life: 50 })
+    }
+
+    // Trap → orange flash
+    if (msg.includes('🪤') || msg.includes('bẫy')) {
+      spawnVfx(50, 55, 15, '#f59e0b', { spread: 8, sizeMax: 8, life: 30 })
+      spawnPopup(50, 50, '🪤', '#f59e0b', 28)
+    }
+
+    // Overflow → purple explosion
+    if (msg.includes('Overflow')) {
+      spawnVfx(50, 20, 35, '#7c3aed', { spread: 18, sizeMax: 16, life: 50 })
+      spawnVfx(50, 20, 20, '#a78bfa', { spread: 12, sizeMax: 10, life: 35 })
+      spawnPopup(50, 15, '💥 OVERFLOW!', '#a78bfa', 32)
+    }
+
+    // Draw
+    if (msg.includes('Rút')) {
+      const cy = isPlayer ? 85 : 5
+      spawnVfx(70, cy, 10, '#818cf8', { spread: 5, sizeMax: 6, life: 25 })
+    }
+
+    // Victory
+    if (msg.includes('🏆')) {
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          spawnVfx(20 + Math.random() * 60, 30 + Math.random() * 40, 20, '#eab308', {
+            spread: 15,
+            sizeMax: 12,
+            life: 60,
+          })
+          spawnVfx(20 + Math.random() * 60, 30 + Math.random() * 40, 15, '#f97316', {
+            spread: 12,
+            sizeMax: 10,
+            life: 50,
+          })
+        }, i * 200)
+      }
+    }
+
+    // Weapon equip
+    if (msg.includes('🗡️') || msg.includes('Trang bị')) {
+      const cy = isPlayer ? 65 : 25
+      spawnVfx(50, cy, 15, '#d97706', { spread: 8, sizeMax: 8, life: 30 })
+      spawnPopup(50, cy - 5, '🗡️', '#d97706', 28)
+    }
+  },
+)
+
+// ===== GAME LOGIC =====
 const difficultyLabel = computed(() => {
   switch (difficulty.value) {
     case 'easy':
@@ -444,18 +859,15 @@ function handleHandCardClick(index: number) {
   const card = gameState.value.player.hand[index]
   if (!card || card.cost > gameState.value.player.mana) return
 
-  // Cancel attack mode
   attackingIndex.value = null
 
   if (selectedCardIndex.value === index) {
-    // Deselect
     selectedCardIndex.value = null
     return
   }
 
   selectedCardIndex.value = index
 
-  // Auto-play non-targeted cards
   if (card.type === 'spell' && !needsTarget(card)) {
     playCard(index)
     selectedCardIndex.value = null
@@ -476,7 +888,6 @@ function handleBoardCreatureClick(boardIndex: number) {
 
   const slot = gameState.value.player.board[boardIndex]
 
-  // If we have a card selected, play it to this board slot
   if (selectedCardIndex.value !== null) {
     const card = gameState.value.player.hand[selectedCardIndex.value]
     if (card) {
@@ -490,7 +901,6 @@ function handleBoardCreatureClick(boardIndex: number) {
         selectedCardIndex.value = null
         return
       }
-      // Spell targeting friendly creature
       if (card.type === 'spell' && slot) {
         playCard(selectedCardIndex.value, boardIndex)
         selectedCardIndex.value = null
@@ -499,7 +909,6 @@ function handleBoardCreatureClick(boardIndex: number) {
     }
   }
 
-  // Select creature for attacking
   if (slot && slot.canAttack && !slot.hasAttacked && !slot.frozen) {
     if (attackingIndex.value === boardIndex) {
       attackingIndex.value = null
@@ -512,7 +921,6 @@ function handleBoardCreatureClick(boardIndex: number) {
 
 function handleDefenderClick(defenderIdx: number) {
   if (attackingIndex.value === null) {
-    // Check if we have a spell selected targeting enemy
     if (selectedCardIndex.value !== null) {
       const card = gameState.value.player.hand[selectedCardIndex.value]
       if (card && card.type === 'spell') {
@@ -526,7 +934,7 @@ function handleDefenderClick(defenderIdx: number) {
   attackingIndex.value = null
 }
 
-function handleHeroAttack() {
+function handleEnemyHeroAttack() {
   if (attackingIndex.value === null) return
   attackWithCreature(attackingIndex.value, 'hero')
   attackingIndex.value = null
