@@ -68,7 +68,7 @@ const categoryBreakdown = computed(() => (author.value ? getCategoryBreakdown(au
 
 <template>
   <div class="min-h-screen bg-bg-deep text-text-primary font-body">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 pt-20 sm:pt-28 pb-16 sm:pb-24">
       <!-- Not found -->
       <template v-if="!author">
         <div class="flex flex-col items-center justify-center py-24 text-center">

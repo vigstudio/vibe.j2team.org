@@ -50,7 +50,7 @@ const styledAuthors = getMultiAppAuthors().map((stat) => ({
 
 <template>
   <div class="min-h-screen bg-bg-deep text-text-primary font-body">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 pt-20 sm:pt-28 pb-16 sm:pb-24">
       <AppBreadcrumb :items="[{ label: 'Bảng xếp hạng tác giả' }]" />
 
       <!-- Header -->

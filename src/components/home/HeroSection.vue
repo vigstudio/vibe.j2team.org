@@ -13,10 +13,10 @@ useHead({
 </script>
 
 <template>
-  <header class="relative max-w-5xl mx-auto px-4 sm:px-6 pt-20 pb-16">
+  <header class="relative max-w-5xl mx-auto px-4 sm:px-6 pt-28 pb-16">
     <!-- Issue badge -->
     <div
-      class="absolute top-8 right-4 sm:right-6 bg-accent-coral text-bg-deep font-display font-bold text-xs tracking-widest px-3 py-1.5 rotate-3 animate-fade-up animate-delay-2"
+      class="absolute top-20 right-4 sm:right-6 bg-accent-coral text-bg-deep font-display font-bold text-xs tracking-widest px-3 py-1.5 rotate-3 animate-fade-up animate-delay-2"
     >
       VOL.01 / 2026
     </div>
