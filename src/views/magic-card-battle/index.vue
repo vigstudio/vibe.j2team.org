@@ -565,8 +565,19 @@
       <!-- Game Log (collapsible) -->
       <div
         v-if="showLog"
-        class="absolute bottom-[140px] right-2 w-72 max-h-48 overflow-y-auto bg-black/90 border border-gray-700 rounded-lg p-2 z-20 text-[10px]"
+        class="absolute top-14 right-2 w-72 max-h-48 overflow-y-auto bg-black/90 border border-gray-700 rounded-lg p-2 z-20 text-[10px]"
       >
+        <div class="flex justify-between items-center mb-1 sticky top-0 bg-black/90">
+          <span class="text-gray-500 font-display uppercase text-[9px] tracking-wider"
+            >Game Log</span
+          >
+          <button
+            class="text-gray-500 hover:text-white text-xs cursor-pointer px-1"
+            @click="showLog = false"
+          >
+            ✕
+          </button>
+        </div>
         <div
           v-for="(log, i) in reversedLog"
           :key="i"
@@ -578,9 +589,9 @@
         </div>
       </div>
       <button
-        class="absolute bottom-[140px] right-2 z-20 w-6 h-6 bg-gray-800 border border-gray-600 rounded text-[10px] text-gray-400 hover:text-white cursor-pointer"
-        :class="showLog ? 'hidden' : ''"
-        @click="showLog = !showLog"
+        v-if="!showLog"
+        class="absolute top-14 right-2 z-20 w-6 h-6 bg-gray-800 border border-gray-600 rounded text-[10px] text-gray-400 hover:text-white cursor-pointer"
+        @click="showLog = true"
         title="Game Log"
       >
         📜
