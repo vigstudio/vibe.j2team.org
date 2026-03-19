@@ -36,6 +36,10 @@ function collectPages() {
   return { apps, authors: [...authors] }
 }
 
+function toAuthorSlug(author) {
+  return author.toLowerCase().replace(/\s+/g, '-')
+}
+
 function escapeXml(str) {
   return str
     .replace(/&/g, '&amp;')
@@ -94,6 +98,7 @@ const sitemaps = [
       { loc: `${SITE_URL}/bookmarks`, changefreq: 'monthly', priority: '0.3' },
       { loc: `${SITE_URL}/content-policy`, changefreq: 'monthly', priority: '0.3' },
       { loc: `${SITE_URL}/members`, changefreq: 'weekly', priority: '0.5' },
+      { loc: `${SITE_URL}/contributors`, changefreq: 'weekly', priority: '0.5' },
       ...CATEGORIES.map((id) => ({
         loc: `${SITE_URL}/category/${id}`,
         changefreq: 'weekly',
@@ -113,8 +118,8 @@ const sitemaps = [
   },
   {
     name: 'authors.xml',
-    urls: authors.map((slug) => ({
-      loc: `${SITE_URL}/author/${encodeURIComponent(slug)}`,
+    urls: authors.map((name) => ({
+      loc: `${SITE_URL}/author/${encodeURIComponent(toAuthorSlug(name))}`,
       changefreq: 'weekly',
       priority: '0.6',
     })),
