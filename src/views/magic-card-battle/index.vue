@@ -460,6 +460,12 @@
             />
           </div>
           <span class="text-xs text-gray-500">🃏 {{ gameState.player.deck.length }}</span>
+          <RouterLink
+            to="/"
+            class="px-2 py-1 bg-gray-800 border border-gray-600 text-gray-400 text-xs hover:text-white transition-all"
+            title="Về trang chủ"
+            >🏠</RouterLink
+          >
           <button
             class="px-2 py-1 bg-gray-800 border border-gray-600 text-gray-400 text-xs hover:text-white transition-all cursor-pointer"
             @click="showTutorial = true"
