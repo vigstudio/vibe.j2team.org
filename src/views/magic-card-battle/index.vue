@@ -97,9 +97,9 @@
 
       <RouterLink
         to="/"
-        class="mt-3 text-gray-500 hover:text-gray-300 text-xs font-display uppercase tracking-wider transition-colors"
+        class="mt-4 w-64 py-3 px-6 bg-gray-800/50 border border-gray-600/50 text-gray-300 font-display tracking-widest uppercase text-sm text-center hover:bg-gray-700 hover:border-gray-400 transition-all block"
       >
-        ← Về trang chủ
+        🏠 Về Trang Chủ
       </RouterLink>
 
       <p class="text-gray-600 text-xs mt-4 max-w-sm text-center">
@@ -462,9 +462,8 @@
           <span class="text-xs text-gray-500">🃏 {{ gameState.player.deck.length }}</span>
           <RouterLink
             to="/"
-            class="px-2 py-1 bg-gray-800 border border-gray-600 text-gray-400 text-xs hover:text-white transition-all"
-            title="Về trang chủ"
-            >🏠</RouterLink
+            class="px-3 py-1 bg-gray-800 border border-gray-600 text-gray-300 text-xs font-display uppercase tracking-wider hover:bg-gray-700 hover:text-white transition-all"
+            >🏠 Home</RouterLink
           >
           <button
             class="px-2 py-1 bg-gray-800 border border-gray-600 text-gray-400 text-xs hover:text-white transition-all cursor-pointer"
