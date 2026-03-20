@@ -5,7 +5,6 @@ const meta: PageMeta = {
   description: 'Đấu Bài Ma Thuật Developer — 200+ quân bài, chiến đấu với AI',
   author: 'VigStudio',
   category: 'game',
-  showToolbar: false,
 }
 
 export default meta
