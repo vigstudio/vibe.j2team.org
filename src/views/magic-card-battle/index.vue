@@ -95,6 +95,13 @@
         📖 Hướng dẫn chơi
       </button>
 
+      <RouterLink
+        to="/"
+        class="mt-3 text-gray-500 hover:text-gray-300 text-xs font-display uppercase tracking-wider transition-colors"
+      >
+        ← Về trang chủ
+      </RouterLink>
+
       <p class="text-gray-600 text-xs mt-4 max-w-sm text-center">
         200 quân bài • 6 loại bài • 8 môi trường • 9 kỹ năng đặc biệt
       </p>
